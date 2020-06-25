@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./logo.svg";
+
+import CreateTodo from "./components/create-todo.component";
 
 class App extends Component {
   render() {
@@ -37,6 +39,7 @@ class App extends Component {
             </div>
           </nav>
           <br />
+          <Route path="/create" component={CreateTodo} />
         </div>
       </Router>
     );
