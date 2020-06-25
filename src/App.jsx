@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./logo.svg";
 
 import CreateTodo from "./components/create-todo.component";
+import TodosList from "./components/todos-list.component";
 
 class App extends Component {
   render() {
@@ -40,6 +41,7 @@ class App extends Component {
           </nav>
           <br />
           <Route path="/create" component={CreateTodo} />
+          <Route exact path="/" component={TodosList}/>
         </div>
       </Router>
     );
