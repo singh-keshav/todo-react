@@ -6,6 +6,7 @@ import logo from "./logo.svg";
 
 import CreateTodo from "./components/create-todo.component";
 import TodosList from "./components/todos-list.component";
+import EditTodo from "./components/edit-todo.component";
 
 class App extends Component {
   render() {
@@ -42,6 +43,7 @@ class App extends Component {
           <br />
           <Route path="/create" component={CreateTodo} />
           <Route exact path="/" component={TodosList}/>
+          <Route path="/edit/:id/" component={EditTodo}/>
         </div>
       </Router>
     );
