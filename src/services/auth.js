@@ -1,18 +1,18 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/";
+const API_URL = "http://localhost:4000";
 
 class AuthService {
   login(email, password) {
     return axios
-      .post(API_URL+"users/login", {
+      .post(`${API_URL}users/login`, {
         email,
         password
       })
       .then(response => {
         if (response.data.token) {
           localStorage.setItem("user", JSON.stringify(response.data));
-          console.log("json saved in local storage")
+          console.log("json saved in local storage");
         }
 
         return response.data;
@@ -24,7 +24,7 @@ class AuthService {
   }
 
   register(first_name, last_name, email, password) {
-    return axios.post(API_URL + "users/register", {
+    return axios.post(`${API_URL}users/register`, {
       first_name,
       last_name,
       email,

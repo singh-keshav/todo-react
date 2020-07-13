@@ -1,57 +1,46 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, withRouter } from "react-router-dom";
 import FilterButton from "./dropdown";
 
-const Todo = props => (
+const TodoRow = props => (
   <tr>
     <td>{props.todo.todo_description}</td>
     <td>{props.todo.todo_responsible}</td>
     <td>{props.todo.todo_priority}</td>
     <td>
-      <Link to={"/edit/" + props.todo._id}>Edit</Link>
+      <Link to={`/todos/edit/${props.todo._id}`}>Edit</Link>
     </td>
   </tr>
 );
 
-export default class TodosList extends Component {
+class TodosList extends Component {
   constructor(props) {
     super(props);
-    this.state = { todos: [], filter: null };
-    
+    this.state = { filter: null };
   }
-
-  componentDidMount() {
-    axios
-      .get("http://localhost:4000/todos/")
-      .then(response => {
-        this.setState({ todos: response.data });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  }
-
 
   handleclick(e) {
     this.setState({ filter: e });
   }
 
   todoList() {
-    var list = this.state.todos;
+    const todos = this.props.todos;
     const filter = this.state.filter;
-    switch (filter) {
-      case "Active":
-        list = list.filter(e => e.todo_completed === false);
-        break;
-      case "Inactive":
-        list = list.filter(e => e.todo_completed === true);
-        break;
-      default:
-    }
-    return list.map(function(currentTodo, i) {
-      return <Todo todo={currentTodo} key={i} />;
-    });
+
+    return todos
+      .filter(todo => {
+        switch (filter) {
+          case "Active":
+            return !todo.todo_completed;
+          case "Inactive":
+            return todo.todo_completed;
+          default:
+            return true;
+        }
+      })
+      .map(function(currentTodo, i) {
+        return <TodoRow todo={currentTodo} key={i} />;
+      });
   }
 
   render() {
@@ -79,3 +68,5 @@ export default class TodosList extends Component {
     );
   }
 }
+
+export default withRouter(TodosList);

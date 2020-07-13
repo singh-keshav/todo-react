@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
-import AuthService from "../services/auth-services"
+import { Link, Redirect } from "react-router-dom";
 
-import SignIn from "./sign-in";
+import authService from "../services/auth";
 
-export default class SignUp extends Component {
+class Signup extends Component {
   constructor(props) {
     super(props);
 
@@ -24,9 +22,6 @@ export default class SignUp extends Component {
       successful: false,
       message: ""
     };
-  }
-  handleClick() {
-    this.setState();
   }
 
   onChangeFirstName(e) {
@@ -60,33 +55,16 @@ export default class SignUp extends Component {
     console.log(`Todo Description: ${this.state.first_name}`);
     console.log(`Todo Responsible: ${this.state.last_name}`);
 
-    this.state = {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      successful: false,
-      message: ""
-    };
-
-    this.setState({
-      message: "",
-      successful: false
-    });
-
-    AuthService.register(
+    authService.register(
       this.state.first_name,
       this.state.last_name,
       this.state.email,
       this.state.password
-    ).then(
-      response => {
-        this.setState({
-          message: response.data.message,
-          successful: true
-        });
-      },
-      error => {
+    )
+      .then(() => {
+        this.setState({ successful: true });
+      })
+      .catch(error => {
         const resMessage =
           (error.response &&
             error.response.data &&
@@ -98,81 +76,70 @@ export default class SignUp extends Component {
           successful: false,
           message: resMessage
         });
-      }
-    );
+      });
   }
 
   render() {
+    if (this.state.successful) {
+      return <Redirect to="/login" />;
+    }
+
     return (
-      <Router>
-        <Route exact path="/">
-          <form
-            onSubmit={this.onSubmit}
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              marginTop: 50,
-              maxWidth: 300
-            }}
-          >
-            <h4>Welcome!</h4>
-            <div className="form-group" style={{ marginTop: 20 }}>
-              <label>First Name</label>
-              <input
-                type="text"
-                className="form-control"
-                value={this.state.first_name}
-                onChange={this.onChangeFirstName}
-              />
-            </div>
-            <div className="form-group">
-              <label>last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                value={this.state.last_name}
-                onChange={this.onChangeLastName}
-              />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="text"
-                className="form-control"
-                value={this.state.email}
-                onChange={this.onChangeEmail}
-              />
-            </div>
-            <div className="form-group">
-              <label>password</label>
-              <input
-                type="password"
-                className="form-control"
-                value={this.state.password}
-                onChange={this.onChangePassword}
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="submit"
-                value="Register"
-                className="btn btn-primary"
-              />
-            </div>
-            <div className="container signin">
-              Already have an account?
-              <Link
-                to="/users/login"
-                className=" signin "
-                onClick={this.handleClick.bind(this)}
-              >
-                sign in
-              </Link>
-            </div>
-          </form>
-        </Route>
-        <Route path="/users/login" component={SignIn} />
-      </Router>
+      <form
+        onSubmit={this.onSubmit}
+        style={{
+          marginLeft: "auto",
+          marginRight: "auto",
+          marginTop: 50,
+          maxWidth: 300
+        }}
+      >
+        <h4>Welcome!</h4>
+        <div className="form-group" style={{ marginTop: 20 }}>
+          <label>First Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={this.state.first_name}
+            onChange={this.onChangeFirstName}
+          />
+        </div>
+        <div className="form-group">
+          <label>last Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={this.state.last_name}
+            onChange={this.onChangeLastName}
+          />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="text"
+            className="form-control"
+            value={this.state.email}
+            onChange={this.onChangeEmail}
+          />
+        </div>
+        <div className="form-group">
+          <label>password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={this.state.password}
+            onChange={this.onChangePassword}
+          />
+        </div>
+        <div className="form-group">
+          <input type="submit" value="Register" className="btn btn-primary" />
+        </div>
+        <div>
+          Already have an account? <Link to="/login">Signin here.</Link>
+        </div>
+      </form>
     );
   }
 }
+
+export default Signup;

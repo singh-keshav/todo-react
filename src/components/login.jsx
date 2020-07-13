@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import AuthService from "../services/auth-services";
+import { Link, Redirect } from "react-router-dom";
 
-export default class SignIn extends Component {
+import authService from "../services/auth";
+
+class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -16,7 +17,7 @@ export default class SignIn extends Component {
       password: "",
       loading: false,
       message: "",
-      isAuthorised: !!AuthService.getCurrentUser()
+      isAuthorised: !!authService.getCurrentUser()
     };
   }
 
@@ -41,11 +42,11 @@ export default class SignIn extends Component {
       message: "something"
     });
 
-    AuthService.login(this.state.email, this.state.password).then(
-      () => {
+    authService.login(this.state.email, this.state.password)
+      .then(() => {
         this.setState({ isAuthorised: true });
-      },
-      error => {
+      })
+      .catch(error => {
         const resMessage =
           (error.response &&
             error.response.data &&
@@ -57,13 +58,12 @@ export default class SignIn extends Component {
           loading: false,
           message: resMessage
         });
-      }
-    );
+      });
   }
 
   render() {
     if (this.state.isAuthorised) {
-      return <Redirect to="/profile" />;
+      return <Redirect to="/todos/list" />;
     }
 
     return (
@@ -98,8 +98,13 @@ export default class SignIn extends Component {
           <div className="form-group">
             <input type="submit" value="Sign In" className="btn btn-primary" />
           </div>
+          <div>
+            Don't have an account? <Link to="/signup">Signup here.</Link>
+          </div>
         </form>
       </div>
     );
   }
 }
+
+export default Login;
