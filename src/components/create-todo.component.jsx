@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-
+import {withRouter } from "react-router-dom";
 import todoService from "../services/todo";
 
-export default class CreateTodo extends Component {
+ class CreateTodo extends Component {
   constructor(props) {
     super(props);
 
@@ -18,6 +18,8 @@ export default class CreateTodo extends Component {
       todo_completed: false
     };
   }
+
+  
 
   onChangeTodoDescription(e) {
     this.setState({
@@ -62,6 +64,7 @@ export default class CreateTodo extends Component {
     });
 
     console.log(`Form submitted:`);
+    this.props.onCreate();
   }
 
   render() {
@@ -138,3 +141,5 @@ export default class CreateTodo extends Component {
     );
   }
 }
+
+export default withRouter(CreateTodo);
