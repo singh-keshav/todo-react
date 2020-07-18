@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import FilterButton from "./dropdown";
+import dustbin from "../assets/dustbin.svg";
 
 const TodoRow = props => (
   <tr>
@@ -9,6 +10,16 @@ const TodoRow = props => (
     <td>{props.todo.todo_priority}</td>
     <td>
       <Link to={`/todos/edit/${props.todo._id}`}>Edit</Link>
+    </td>
+    <td>
+      <img
+        style={{ cursor: "pointer" }}
+        src={dustbin}
+        width="20"
+        height="20"
+        alt="delete task"
+        onClick={props.deleteTodo}
+      />
     </td>
   </tr>
 );
@@ -27,6 +38,8 @@ class TodosList extends Component {
     const todos = this.props.todos;
     const filter = this.state.filter;
 
+    console.log("todos:", todos);
+
     return todos
       .filter(todo => {
         switch (filter) {
@@ -34,12 +47,20 @@ class TodosList extends Component {
             return !todo.todo_completed;
           case "Inactive":
             return todo.todo_completed;
+          case "All":
+            return true;
           default:
             return true;
         }
       })
-      .map(function(currentTodo, i) {
-        return <TodoRow todo={currentTodo} key={i} />;
+      .map((todo, i) => {
+        return (
+          <TodoRow
+            todo={todo}
+            key={i}
+            deleteTodo={() => this.props.deleteTodo(todo._id)}
+          />
+        );
       });
   }
 
@@ -48,7 +69,7 @@ class TodosList extends Component {
       <div>
         <h3>Todos List</h3>
         <FilterButton
-          options={["Active", "Inactive"]}
+          options={["Active", "Inactive","All"]}
           mainText={"filter"}
           onSelect={this.handleclick.bind(this)}
         />
@@ -60,6 +81,7 @@ class TodosList extends Component {
               <th>Responsible</th>
               <th>Priority</th>
               <th>Action</th>
+              <th>delete</th>
             </tr>
           </thead>
           <tbody>{this.todoList()}</tbody>

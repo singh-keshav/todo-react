@@ -25,6 +25,11 @@ class TodoService {
       headers: authHeader()
     });
   }
+  delete(id){
+    return axios.delete(`${API_URL}/todos/${id}`, {
+      headers: authHeader()
+    });
+  }
 }
 
 export default new TodoService();

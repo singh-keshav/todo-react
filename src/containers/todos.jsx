@@ -5,7 +5,7 @@ import { Link, Route } from "react-router-dom";
 import authService from "../services/auth";
 import todoService from "../services/todo";
 
-import logo from "../logo.svg";
+import logo from "../assets/logo.svg";
 import CreateTodo from "../components/create-todo.component";
 import TodosList from "../components/todos-list.component";
 import EditTodo from "../components/edit-todo.component";
@@ -21,7 +21,8 @@ class Todos extends Component {
 
     this.logoutHandler = this.logoutHandler.bind(this);
     this.updateTodo = this.updateTodo.bind(this);
-    this.todoCreated=this.todoCreated.bind(this);
+    this.todoCreated = this.todoCreated.bind(this);
+    this.todoDeleted = this.todoDeleted.bind(this);
   }
 
   componentDidMount() {
@@ -45,7 +46,8 @@ class Todos extends Component {
       todos: this.state.todos.map(t => (t._id === todo._id ? todo : t))
     });
   }
-  todoCreated(){
+
+  todoCreated() {
     todoService
       .getAll()
       .then(response => {
@@ -56,6 +58,18 @@ class Todos extends Component {
       });
   }
 
+  todoDeleted(id) {
+    todoService
+      .delete(id)
+      .then(() => {
+        this.setState({
+          todos: this.state.todos.filter(t => !(t._id===id))
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
 
   render() {
     const { currentUser } = this.state;
@@ -94,12 +108,12 @@ class Todos extends Component {
             </button>
           </div>
         </nav>
-        
+
         <Route path="/todos/create">
           <CreateTodo onCreate={this.todoCreated} />
         </Route>
         <Route path="/todos/list">
-          <TodosList todos={this.state.todos} />
+          <TodosList todos={this.state.todos} deleteTodo={this.todoDeleted} />
         </Route>
         <Route path="/todos/edit/:id">
           <EditTodo onEdit={this.updateTodo} />
